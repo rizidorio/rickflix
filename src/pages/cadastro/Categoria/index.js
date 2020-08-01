@@ -3,23 +3,20 @@ import { Link } from 'react-router-dom';
 import PageDefault from '../../../componets/PageDefault';
 import FormField from '../../../componets/FormField';
 import Button from '../../../componets/Button';
+// eslint-disable-next-line import/extensions
+import useForm from '../../../hooks/useForm.js';
 
 function CadastroCategoria() {
-  const [categorias, setCategorias] = useState(['Teste']);
-
   const valoresIniciais = {
-    nome: '',
+    id: 0,
+    titulo: '',
     descricao: '',
     cor: '#000000',
   };
-  const [values, setValues] = useState(valoresIniciais);
 
-  function setValue(chave, valor) {
-    setValues({
-      ...values,
-      [chave]: valor,
-    });
-  }
+  const { handleChange, values, clearForm } = useForm(valoresIniciais);
+
+  const [categorias, setCategorias] = useState(['Teste']);
 
   useEffect(() => {
     const URL = window.location.hostname.includes('localhost')
@@ -31,18 +28,13 @@ function CadastroCategoria() {
         ...resposta,
       ]);
     });
-  });
-
-  function handleChange(e) {
-    setValue(e.target.getAttribute('name'),
-      e.target.value);
-  }
+  }, []);
 
   return (
     <PageDefault>
       <h1>
         Cadastro de Categoria:
-        {values.nome}
+        {values.titulo}
       </h1>
 
       <form onSubmit={function handleSubmit(e) {
@@ -51,7 +43,7 @@ function CadastroCategoria() {
           ...categorias,
           values,
         ]);
-        setValues({ valoresIniciais });
+        clearForm();
       }}
       >
 
@@ -59,7 +51,7 @@ function CadastroCategoria() {
           label="Nome da Categoria"
           type="text"
           name="nome"
-          value={values.nome}
+          value={values.titulo}
           onChange={handleChange}
         />
 
@@ -91,8 +83,8 @@ function CadastroCategoria() {
 
       <ul>
         {categorias.map((categoria) => (
-          <li key={categoria.nome}>
-            {categoria.nome}
+          <li key={categoria.id}>
+            {categoria.titulo}
           </li>
         ))}
       </ul>
